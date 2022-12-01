@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const Service = require("egg").Service;
 const guid = require("../utils/guid");
 const md5 = require("blueimp-md5");
+const err = require("../utils/err")
 const fs = require("fs");
 const path = require('path'); // node的path路径模块
 const awaitWriteStream = require('await-stream-ready').write;
@@ -170,7 +171,7 @@ class HomeService extends Service {
     const writeStream = fs.createWriteStream(target);
     try {
       await awaitWriteStream(stream.pipe(writeStream)); // 异步写入文件
-      ctx.body = {
+      return {
         code: "000000",
         msg: "上传成功",
         data: {
@@ -179,6 +180,9 @@ class HomeService extends Service {
       };
     } catch (err) {
       await sendToWormhole(stream); // 如果失败，关闭文件流
+      return {
+          ...err.err16
+      }
     }
   }
 }
