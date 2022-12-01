@@ -175,7 +175,7 @@ class HomeService extends Service {
         code: "000000",
         msg: "上传成功",
         data: {
-          src: `https://static.tell_colud.com/tell_colud_img//upload/${filename}`,
+          src: `http://static.tell_colud.com/tell_colud_img//upload/${filename}`,
         },
       };
     } catch (err) {
