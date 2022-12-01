@@ -5,6 +5,9 @@ const Service = require("egg").Service;
 const guid = require("../utils/guid");
 const md5 = require("blueimp-md5");
 const fs = require("fs");
+const path = require('path'); // node的path路径模块
+const awaitWriteStream = require('await-stream-ready').write;
+const sendToWormhole = require('stream-wormhole');
 
 class HomeService extends Service {
   /**

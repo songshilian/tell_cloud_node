@@ -7,6 +7,7 @@
     "declarations": true
   },
   "dependencies": {
+    "await-stream-ready": "^1.0.1",
     "blueimp-md5": "^2.19.0",
     "egg": "^3",
     "egg-cors": "^2.2.3",
@@ -14,6 +15,7 @@
     "egg-scripts": "^2",
     "jsonwebtoken": "^8.5.1",
     "pkg": "^5.8.0",
+    "stream-wormhole": "^1.1.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
