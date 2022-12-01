@@ -3,7 +3,7 @@
 const jwt = require("jsonwebtoken");
 const Service = require("egg").Service;
 const guid = require("../utils/guid");
-const md5 = require("md5");
+const md5 = require("blueimp-md5");
 const fs = require("fs");
 
 class HomeService extends Service {
