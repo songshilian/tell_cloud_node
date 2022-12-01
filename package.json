@@ -13,7 +13,8 @@
     "egg-scripts": "^2",
     "jsonwebtoken": "^8.5.1",
     "pkg": "^5.8.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "md5": "^2.3.0"
   },
   "devDependencies": {
     "egg-bin": "^5.5.0",
