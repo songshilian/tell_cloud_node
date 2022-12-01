@@ -3,6 +3,8 @@
 const jwt = require("jsonwebtoken");
 const Service = require("egg").Service;
 const guid = require("../utils/guid");
+const md5 = require("md5");
+const fs = require("fs");
 
 class HomeService extends Service {
   /**
@@ -118,6 +120,9 @@ class HomeService extends Service {
       };
     }
   }
+  /**
+   * getUserMsg 获取用户信息
+   */
   async getUserMsg() {
     try {
       const { ctx, app } = this;
@@ -132,7 +137,7 @@ class HomeService extends Service {
             code: "000000",
             message: "获取信息成功",
             data: data,
-          }
+          };
         } else {
           return {
             code: "000001",
@@ -146,6 +151,31 @@ class HomeService extends Service {
         code: "999999",
         message: e,
       };
+    }
+  }
+  /**
+   * uploadImage 图片上传
+   */
+  async uploadImage() {
+    const { ctx, app } = this;
+    const stream = await this.ctx.getFileStream(); // egg中获取上传文件的方法
+    const filename = md5(new Date().getTime()) + ".png";
+    const target = path.join(
+      "/usr/share/nginx/html/static/tell_colud_img//upload/",
+      filename
+    );
+    const writeStream = fs.createWriteStream(target);
+    try {
+      await awaitWriteStream(stream.pipe(writeStream)); // 异步写入文件
+      ctx.body = {
+        code: "000000",
+        msg: "上传成功",
+        data: {
+          src: `https://static.tell_colud.com/tell_colud_img//upload/${filename}`,
+        },
+      };
+    } catch (err) {
+      await sendToWormhole(stream); // 如果失败，关闭文件流
     }
   }
 }

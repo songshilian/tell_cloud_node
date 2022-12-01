@@ -23,6 +23,10 @@ class HomeController extends Controller {
     const { ctx } = this;
     ctx.body = await ctx.service.home.getUserMsg();
   }
+  async uploadImage(){
+    const { ctx } = this;
+    ctx.body = await ctx.service.home.uploadImage();
+  }
 }
 
 module.exports = HomeController;
