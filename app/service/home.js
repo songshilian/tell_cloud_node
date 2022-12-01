@@ -165,7 +165,7 @@ class HomeService extends Service {
     const stream = await this.ctx.getFileStream(); // egg中获取上传文件的方法
     const filename = md5(new Date().getTime()) + ".png";
     const target = path.join(
-      "/usr/share/nginx/html/static/tell_colud_img//upload/",
+      "/usr/share/nginx/html/static/tell_colud_img/upload/",
       filename
     );
     const writeStream = fs.createWriteStream(target);
@@ -175,7 +175,7 @@ class HomeService extends Service {
         code: "000000",
         msg: "上传成功",
         data: {
-          src: `http://static.tell_colud.com/tell_colud_img//upload/${filename}`,
+          src: `http://106.14.145.176/images/${filename}`,
         },
       };
     } catch (err) {
