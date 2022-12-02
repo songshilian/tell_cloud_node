@@ -36,8 +36,11 @@ class Communication extends Service {
   /**
    * getAddUserCircle 发布留言板信息
    * @param userId 用户id
+   * @param userName 发布的用户名称
    * @param userContent 用户内容文案
-   * @param userCirleImg 用户上传北京地址
+   * @param userCirleImg 用户上传图片地址
+   * @param circleCurrentTime 发布时间
+   * @param userHeadProtraitUrl 用户头像
    */
   async getAddUserCircle() {
     try {
@@ -71,20 +74,27 @@ class Communication extends Service {
    * @param replyName 回复人名称
    * @param replyNameUserId 回复人Id
    * @param respondMessage 评论信息
+   * @param respondDate 评论的当前日期时间
    */
   async commentCircleMsg() {
     try {
       const { ctx, app } = this;
-      const { id, commentStatus, ...rest } = ctx.request.body;
+      const { id, commentStatus, respondMessage, ...rest } = ctx.request.body;
       console.log(id, "1111");
-      const circleData = await app.mysql.query(
-        `select * from user_circle where  id like "%${id}"}`
-      ); // 查询 id （返回是一个数组 取第0个 ） 
-      console.log(circleData,'circleData')
-      let commentData = JSON.parse(commentData) = circleData.messageCall ?? [];
+      const circleData = await app.mysql.select("user_circle", {
+        where: {
+          id,
+        },
+      }); // 查询 id （返回是一个数组 取第0个 ）
+      console.log(circleData[0], "circleData");
+      const newCircleData = circleData[0];
+      const messageCall = newCircleData.messageCall ?? [];
+      let commentData =
+        typeof messageCall === "string" ? JSON.parse(messageCall) : messageCall;
+      console.log(commentData);
       if (commentStatusEnum.author === commentStatus) {
         // 评论
-        const { respondMessage, respondCircleName, respondUserId } = {
+        const { respondCircleName, respondUserId } = {
           ...rest,
         };
         commentData = [
@@ -93,12 +103,13 @@ class Communication extends Service {
             respondCircleName,
             respondMessage,
             respondUserId,
+            respondDate,
             commentStatus: commentStatusEnum.author,
           },
         ];
       } else if (commentStatusEnum.respond === commentStatus) {
         // 回复评论
-        const { respondMessage, replyName, replyNameUserId } = {
+        const { replyName, replyNameUserId } = {
           ...rest,
         };
         commentData = [
@@ -108,16 +119,18 @@ class Communication extends Service {
             respondMessage,
             replyNameUserId,
             replyName,
+            respondDate,
             commentStatus: commentStatusEnum.author,
           },
         ];
       }
-      circleData.messageCall = JSON.stringify(commentData); // 修改messageCall字段
-      console.log(circleData)
-      const data = await app.mysql.update( // 修改朋友圈记录信息
+      newCircleData.messageCall = JSON.stringify(commentData); // 修改messageCall字段
+      console.log(newCircleData, "circleDatacircleData");
+      const data = await app.mysql.update(
+        // 修改朋友圈记录信息
         `user_circle`,
         {
-          circleData,
+          ...newCircleData,
         },
         {
           where: {
