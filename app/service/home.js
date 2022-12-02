@@ -28,9 +28,7 @@ class HomeService extends Service {
           const token = jwt.sign({ ...data }, app.config.keys, {
             expiresIn: "24h",
           });
-          const { userId } = await app.mysql.query(
-            `select * from user_login where username like "%${username}"`
-          );
+          const { userId } = data.userId
           return {
             token,
             userId,
