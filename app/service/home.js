@@ -15,32 +15,39 @@ class HomeService extends Service {
    * cloudLogin 登入
    */
   async cloudLogin() {
-    const { ctx, app } = this;
-    const { username, password } = ctx.request.body;
-    console.log(username, password);
-    const data = await app.mysql.get("user_login", {
-      password,
-      username,
-    });
-    console.log(data);
-    if (data) {
-      const token = jwt.sign({ ...data }, app.config.keys, {
-        expiresIn: "24h",
-      });
-      const { userId } = await app.mysql.query(
-        `select * from user_login where username like "%${username}"`
-      );
-      return {
-        token,
-        userId,
-        code: "000000",
-      };
-    } else {
-      return {
-        code: "000001",
-        msg: "密码或账号输入错误",
-      };
-    }
+      try{
+        const { ctx, app } = this;
+        const { username, password } = ctx.request.body;
+        console.log(username, password);
+        const data = await app.mysql.get("user_login", {
+          password,
+          username,
+        });
+        console.log(data);
+        if (data) {
+          const token = jwt.sign({ ...data }, app.config.keys, {
+            expiresIn: "24h",
+          });
+          const { userId } = await app.mysql.query(
+            `select * from user_login where username like "%${username}"`
+          );
+          return {
+            token,
+            userId,
+            code: "000000",
+          };
+        } else {
+          return {
+            code: "000001",
+            msg: "密码或账号输入错误",
+          };
+        }
+      }catch(e){
+        return {
+          ...err.err2,
+          message:e
+        }
+      }
   }
   /**
    * cloudRegister 注册
@@ -48,15 +55,13 @@ class HomeService extends Service {
   async cloudRegister() {
     try {
       const { ctx, app } = this;
-      const { username, password, name, age, userMsg } = ctx.request.body;
+      const { username, password, name, age, userMsg, } = ctx.request.body;
       console.log(username);
       const data = await app.mysql.query(
         `select * from user_login where username like "%${username}"`
       );
-      console.log(data);
       if (!data.length) {
         const uuid = guid.getGuid();
-        console.log(uuid);
         const dataLogin = await app.mysql.insert("user_login", {
           username,
           password,
@@ -65,6 +70,9 @@ class HomeService extends Service {
         const dataMessage = await app.mysql.insert("user_message", {
           name,
           age,
+          message,
+          username,
+          userHeadProtraitUrl,
           userId: uuid,
         });
         if (dataMessage && dataLogin) {
@@ -83,8 +91,8 @@ class HomeService extends Service {
       }
     } catch (e) {
       return {
-        code: "999999",
-        message: e,
+        ...err.err2,
+        message:e
       };
     }
   }
@@ -96,13 +104,14 @@ class HomeService extends Service {
       const { ctx, app } = this;
       const { userId, ...rest } = ctx.request.body;
       if (userId) {
-        const { name, age, userMsg } = { ...rest };
+        const { name, age, userMsg,userHeadProtraitUrl } = { ...rest };
         const data = await app.mysql.update(
           "user_message",
           {
             name,
             age,
             userMsg,
+            userHeadProtraitUrl
           },
           {
             where: {
@@ -118,9 +127,8 @@ class HomeService extends Service {
       }
     } catch (e) {
       return {
-        code: "999999",
-        msg: "服务端异常",
-        data: e,
+        ...err.err2,
+        message:e
       };
     }
   }
@@ -161,11 +169,10 @@ class HomeService extends Service {
    * uploadImage 图片上传
    */
   async uploadImage() {
-    const { ctx, app } = this;
     const stream = await this.ctx.getFileStream(); // egg中获取上传文件的方法
     const filename = md5(new Date().getTime()) + ".png";
     const target = path.join(
-      "/usr/share/nginx/html/static/tell_colud_img/images/",
+      "/usr/share/nginx/html/static/tell_colud_img/images/", // 服务器的地址
       filename
     );
     const writeStream = fs.createWriteStream(target);

@@ -1,11 +1,11 @@
 module.exports = {
     err1:{
-        err: 000001,
-        msg: '参数错误',
+        code: '000001',
+        message: '参数错误',
     },
     err2:{
         err: 999999,
-        msg: '服务器出错，请联系管理员',
+        message: '服务器出错，请联系管理员',
     },
     err3:(err)=>{
         return {
@@ -63,6 +63,6 @@ module.exports = {
     },
     err16:{
         code: '000001',
-        msg: '图片上传失败，请联系管理员',
+        message: '图片上传失败，请联系管理员',
     },
 }
