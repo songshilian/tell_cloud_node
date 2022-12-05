@@ -21,8 +21,14 @@ class Communication extends Service {
       // const { userId } = ctx.request.body;
       const data = await app.mysql.query(`select * from user_circle`);
       console.log(data);
+      const newData = data.map((item)=>{
+        return {
+          ...item,
+          messageCall:JSON.parse(item.messageCall)
+        }
+      })
       return {
-        data: data,
+        data: newData,
         message: "成功",
         code: "000000",
       };
@@ -38,7 +44,7 @@ class Communication extends Service {
    * @param userId 用户id
    * @param userName 发布的用户名称
    * @param userContent 用户内容文案
-   * @param userCirleImg 用户上传图片地址
+   * @param circleImg 用户上传图片地址
    * @param circleCurrentTime 发布时间
    * @param userHeadProtraitUrl 用户头像
    */
