@@ -18,20 +18,17 @@ class HomeService extends Service {
       try{
         const { ctx, app } = this;
         const { username, password } = ctx.request.body;
-        console.log(username, password);
         const data = await app.mysql.get("user_login", {
           password,
           username,
         });
-        console.log(data);
         if (data) {
           const token = jwt.sign({ ...data }, app.config.keys, {
             expiresIn: "24h",
           });
-          const { userId } = data.userId
           return {
             token,
-            userId,
+            userId:data.userId,
             code: "000000",
           };
         } else {

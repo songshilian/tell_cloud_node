@@ -4,7 +4,7 @@
 
 const communication = (app) => {
   const { router, controller } = app;
-  console.log(app);
+  console.log(app,'app');
   // 添加用户信息（新增用户的联系人列表）接口
   router.post(
     "/api/getAddUserMessage",
