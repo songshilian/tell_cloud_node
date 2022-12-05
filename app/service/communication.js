@@ -85,7 +85,7 @@ class Communication extends Service {
   async commentCircleMsg() {
     try {
       const { ctx, app } = this;
-      const { id, commentStatus, respondMessage, ...rest } = ctx.request.body;
+      const { id, commentStatus,respondDate, respondMessage, ...rest } = ctx.request.body;
       console.log(id, "1111");
       const circleData = await app.mysql.select("user_circle", {
         where: {
