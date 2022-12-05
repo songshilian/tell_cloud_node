@@ -135,7 +135,7 @@ class HomeService extends Service {
       const { ctx, app } = this;
       const { userId } = ctx.request.body;
       if (userId) {
-        const data = await app.mysql.get("user_login", {
+        const data = await app.mysql.get("user_message", {
           userId,
         });
         if (data) {
