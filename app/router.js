@@ -1,6 +1,5 @@
 'use strict';
 const communication = require('./routers/communication')
-
 /**
  * @param {Egg.Application} app - egg application
  */

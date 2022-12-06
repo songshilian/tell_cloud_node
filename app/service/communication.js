@@ -28,7 +28,7 @@ class Communication extends Service {
         }
       })
       return {
-        data: newData,
+        data: newData.reverse(),
         message: "成功",
         code: "000000",
       };

@@ -51,7 +51,6 @@ class HomeService extends Service {
     try {
       const { ctx, app } = this;
       const { username, password, name, age, userMsg, userHeadProtraitUrl} = ctx.request.body;
-      console.log(username);
       const data = await app.mysql.query(
         `select * from user_login where username like "%${username}"`
       );
@@ -100,7 +99,7 @@ class HomeService extends Service {
       const { userId, ...rest } = ctx.request.body;
       if (userId) {
         const { name, age, userMsg,userHeadProtraitUrl } = { ...rest };
-        const data = await app.mysql.update(
+        await app.mysql.update(
           "user_message",
           {
             name,
