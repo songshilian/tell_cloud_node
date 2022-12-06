@@ -50,7 +50,7 @@ class HomeService extends Service {
   async cloudRegister() {
     try {
       const { ctx, app } = this;
-      const { username, password, name, age, userMsg, } = ctx.request.body;
+      const { username, password, name, age, userMsg, userHeadProtraitUrl} = ctx.request.body;
       console.log(username);
       const data = await app.mysql.query(
         `select * from user_login where username like "%${username}"`
@@ -65,8 +65,8 @@ class HomeService extends Service {
         const dataMessage = await app.mysql.insert("user_message", {
           name,
           age,
-          message,
           username,
+          userMsg,
           userHeadProtraitUrl,
           userId: uuid,
         });
@@ -87,7 +87,7 @@ class HomeService extends Service {
     } catch (e) {
       return {
         ...err.err2,
-        message:e
+        data:e
       };
     }
   }
